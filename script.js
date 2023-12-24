@@ -109,18 +109,18 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		// console.log(startX + " " + startY);
 	}
 
-	toolsBar.onmousedown = function (e) {
+	toolsBar.onpointerdown = function (e) {
 		toolsCords.clickX = e.pageX;
 		toolsCords.clickY = e.pageY;
 		let toolsRect = tools.getBoundingClientRect();
 		toolsCords.startX = toolsRect["x"];
 		toolsCords.startY = toolsRect["y"];
-		document.addEventListener("mousemove", moveToolsBar);
+		document.addEventListener("pointermove", moveToolsBar);
 	};
-	toolsBar.onmouseup = function (e) {
+	toolsBar.onpointerup = function (e) {
 		toolsCords.startX = 0;
 		toolsCords.startY = 0;
-		document.removeEventListener("mousemove", moveToolsBar);
+		document.removeEventListener("pointermove", moveToolsBar);
 	};
 
 	// создание элементов на игровом поле
