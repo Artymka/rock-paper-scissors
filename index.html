@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Симулятор | Камень - ножницы - бумага</title>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="tools" id="tools">
+				<div class="tools__drag-bar" id="drag-bar"></div>
+				<div class="tools__body">
+					<div class="tools__buttons">
+						<div class="tools__header">Добавить элемент</div>
+						<div class="tools__row">
+							<a class="tools__button" id="rock-button" title="Камень">🗿</a>
+							<a class="tools__button" id="paper-button" title="Бумага">🧻</a>
+							<a class="tools__button" id="scissors-button" title="Ножницы">✂️</a>
+							<a class="tools__button" id="random-button" title="Случайный элемент">❓</a>
+							<a class="tools__button" id="delete-button" title="Удалить элемент">❌</a>
+						</div>
+					</div>
+					<div class="tools__size">
+						<label for="width" class="tools__label">
+							Ширина игрового поля
+							<input type="number" id="width" value="50" />
+						</label>
+					</div>
+					<div class="tools__size">
+						<label for="height" class="tools__label">
+							Высота игрового поля
+							<input type="number" id="height" value="50" />
+						</label>
+					</div>
+					<a href="#" class="start__button tools__start-button" id="start">Начать</a>
+				</div>
+			</div>
+
+			<div class="field">
+				<div class="field__body" id="field"></div>
+			</div>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
