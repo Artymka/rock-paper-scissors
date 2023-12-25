@@ -2,12 +2,25 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+		/>
 		<link rel="stylesheet" href="style.css" />
 		<title>Симулятор | Камень - ножницы - бумага</title>
 	</head>
 	<body>
-		<div class="wrapper">
+		<div class="greetings">
+			<div class="greetings__body">
+				<div class="greetings__title">
+					Добро пожаловать в симулятор <span>невероятных баталий</span>
+				</div>
+				<div class="greetings__subtitle">камней, ножниц и бумаг</div>
+				<a href="#" class="greetings__button" id="letsgo">Гойда!</a>
+			</div>
+		</div>
+		<a href="#" class="restart-button hidden" id="restart">Начать заново</a>
+		<div class="wrapper hidden">
 			<div class="tools" id="tools">
 				<div class="tools__drag-bar" id="drag-bar"></div>
 				<div class="tools__body">

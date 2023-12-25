@@ -19,6 +19,39 @@ document.addEventListener("DOMContentLoaded", function (e) {
 	// максимальное расстояние между столнувшимися объектами
 	const collisionDist = 20;
 
+	// создаём экран приветствия
+	// обёртка и начальный экран
+	const wrapper = document.querySelector(".wrapper");
+	const greetings = document.querySelector(".greetings");
+
+	// // отбираем параметры запроса
+	// const urlParams = new URLSearchParams(window.location.search);
+	// const isContinued = Boolean(urlParams.get("continue"));
+
+	// if (isContinued) {
+	// 	// просто отрисовываем страницу
+	// 	wrapper.classList.remove("hidden");
+	// } else {
+	// 	// активируем приветственный экран
+	// 	greetings.classList.remove("hidden");
+	// }
+
+	// кнопка в приветствии
+	const letsgoButton = document.getElementById("letsgo");
+	letsgoButton.onclick = function (e) {
+		greetings.classList.add("hidden");
+		wrapper.classList.remove("hidden");
+		// setTimeout(() => {
+		// 	greetings.classList.add("disabled");
+		// }, 1000);
+	};
+
+	// кнопка рестарта
+	const restartButton = document.getElementById("restart");
+	restartButton.onclick = function (e) {
+		window.location.reload();
+	};
+
 	// делаем ссылки кнопками
 	const buttons = document.querySelectorAll(".tools__button");
 	buttons.forEach((button) => {
@@ -71,6 +104,16 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		shift = "delete";
 		activateButton("delete-button", ".tools__button");
 	};
+
+	// делаем кнопки чуть красивее, если сайт открыт на мобилке
+	if (
+		/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
+			navigator.userAgent
+		)
+	) {
+		rockButton.style.padding = "5px";
+		randomButton.style.padding = "5px";
+	}
 
 	// перемещнеие окна с инструментами
 	const tools = document.getElementById("tools");
@@ -153,6 +196,21 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			this.ref.style.left = String(new_x) + "px";
 			this.ref.style.top = String(new_y) + "px";
 		}
+
+		delete() {
+			// удаляем сущность из массива
+			let elemIndex = 0;
+			rpsElements.forEach((rpsElement, i) => {
+				if (rpsElement.ref == this.ref) {
+					elemIndex = i;
+				}
+			});
+			rpsElements.splice(elemIndex, 1);
+
+			// удаляем сущность с экрана
+			this.ref.classList.add("hidden");
+			setTimeout(() => this.ref.remove(), 1000);
+		}
 	}
 
 	// игровое поле
@@ -216,17 +274,14 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			e.stopPropagation();
 
 			if (shift == "delete") {
-				// удаляем из списка
-				rpsElements.forEach((rpsElem, i) => {
-					if (rpsElem.ref == this) {
-						rpsElements.splice(i, 1);
+				rpsElements.forEach((rpsElement) => {
+					if (rpsElement.ref == this) {
+						rpsElement.delete();
 					}
 				});
-				// удаляем из документа
-				this.classList.add("hidden");
-				setTimeout(() => this.remove(), 1000);
-				return false;
 			}
+
+			return false;
 		};
 
 		// добавление элемента
@@ -237,11 +292,7 @@ document.addEventListener("DOMContentLoaded", function (e) {
 	};
 
 	// начало игры
-	let fieldWidth;
-	let fieldHeight;
-	// НУЖНО ДОБАВИТЬ ФУНКЦИОНАЛ, УДАЛЯЮЩИЙ СУЩНОСТИ ЗА ПОЛЕМ
-
-	startButton = document.getElementById("start");
+	const startButton = document.getElementById("start");
 	startButton.onclick = function (e) {
 		shift = "none";
 		rpsElements.forEach((rpsElem) => {
@@ -252,6 +303,24 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		const tools = document.getElementById("tools");
 		tools.classList.add("hidden");
 		setTimeout(() => tools.classList.add("disabled"), 1000);
+
+		// удаление сущностей за пределами поля
+		const fieldRect = field.getBoundingClientRect();
+		let fieldWidth = fieldRect["width"];
+		let fieldHeight = fieldRect["height"];
+
+		let i = 0;
+		while (i < rpsElements.length) {
+			let rpsElement = rpsElements[i];
+			let x = rpsElement.x;
+			let y = rpsElement.y;
+
+			if (x > fieldWidth || x < 0 || y > fieldHeight || y < 0) {
+				rpsElement.delete();
+				continue;
+			}
+			i++;
+		}
 
 		// заменяем рандомные элементы на обычные
 		rpsElements.forEach((rpsElem) => {
@@ -329,6 +398,10 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			let len = rpsElements.length;
 			if (rockCount == len || paperCount == len || scissorsCount == len) {
 				clearInterval(gameIntervalID);
+				// всплывает кнопочка с рестартом
+				setTimeout(() => {
+					restartButton.classList.remove("hidden");
+				}, 1000);
 			}
 
 			cycleCounter++;
