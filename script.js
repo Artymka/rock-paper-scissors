@@ -225,7 +225,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			this.value = 100;
 		}
 		width = this.value;
-		field.style.width = width + "vw";
+		// field.style.width = width + "vw";
+		field.style.width = width + "%";
 	};
 
 	const heightInput = document.getElementById("height");
@@ -236,7 +237,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			this.value = 100;
 		}
 		height = this.value;
-		field.style.height = height + "vh";
+		// field.style.height = height + "vh";
+		field.style.height = height + "%";
 	};
 
 	// клики по полю
@@ -351,31 +353,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
 		gameIntervalID = setInterval(() => {
 			// console.log(cycleCounter);
-
-			// нужно ли обновлять цели
-			if (cycleCounter % cyclesToChangeTargets == 0) {
-				targets = [];
-				// directions = [];
-				for (let i = 0; i < rpsElements.length; i++) {
-					let target = i;
-					while (target == i) {
-						target = Math.round(Math.random() * (rpsElements.length - 1));
-					}
-					targets.push(target);
-					// directions.push(Math.random() < 0.5 ? -1 : 1);
-				}
-			}
-
-			// нужно ли обновить направления
-			if (cycleCounter % cyclesToChangeDirections == 0) {
-				directions = [];
-				for (let i = 0; i < rpsElements.length; i++) {
-					directions.push(Math.random < 0.66 ? 1 : -1);
-				}
-			}
-
-			gameCycle();
-
 			// проверяем, все ли элементы одного типа
 			let rockCount = 0;
 			let paperCount = 0;
@@ -402,7 +379,32 @@ document.addEventListener("DOMContentLoaded", function (e) {
 				setTimeout(() => {
 					restartButton.classList.remove("hidden");
 				}, 1000);
+				return;
 			}
+
+			// нужно ли обновлять цели
+			if (cycleCounter % cyclesToChangeTargets == 0) {
+				targets = [];
+				// directions = [];
+				for (let i = 0; i < rpsElements.length; i++) {
+					let target = i;
+					while (target == i) {
+						target = Math.round(Math.random() * (rpsElements.length - 1));
+					}
+					targets.push(target);
+					// directions.push(Math.random() < 0.5 ? -1 : 1);
+				}
+			}
+
+			// нужно ли обновить направления
+			if (cycleCounter % cyclesToChangeDirections == 0) {
+				directions = [];
+				for (let i = 0; i < rpsElements.length; i++) {
+					directions.push(Math.random < 0.66 ? 1 : -1);
+				}
+			}
+
+			gameCycle();
 
 			cycleCounter++;
 		}, cycleTimeout);
