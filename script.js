@@ -470,6 +470,10 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			}
 
 			// звук по приколу
+			// sound.play();
+			// const sound = new Audio("sound1.mp3");
+			const sound = new Audio("sound2.mp3");
+			sound.volume = 0.1;
 			sound.play();
 		});
 	}
