@@ -148,16 +148,18 @@ div {
 	display: block;
 	text-decoration: none;
 	user-select: none;
-	font-size: 16px;
 	cursor: pointer;
-	padding: 5px;
 	border: 1px solid rgba(0, 0, 0, 0);
+	position: relative;
+	width: 33px;
+	height: 33px;
 }
-#rock-button {
-	padding: 5px 8px;
-}
-#random-button {
-	padding: 5px 8px;
+.tools__button span {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 16px;
 }
 .tools__button.active {
 	border: 1px solid #41424a;

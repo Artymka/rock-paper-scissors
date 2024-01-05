@@ -24,18 +24,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 	const wrapper = document.querySelector(".wrapper");
 	const greetings = document.querySelector(".greetings");
 
-	// // отбираем параметры запроса
-	// const urlParams = new URLSearchParams(window.location.search);
-	// const isContinued = Boolean(urlParams.get("continue"));
-
-	// if (isContinued) {
-	// 	// просто отрисовываем страницу
-	// 	wrapper.classList.remove("hidden");
-	// } else {
-	// 	// активируем приветственный экран
-	// 	greetings.classList.remove("hidden");
-	// }
-
 	// кнопка в приветствии
 	const letsgoButton = document.getElementById("letsgo");
 	letsgoButton.onclick = function (e) {
@@ -104,16 +92,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		shift = "delete";
 		activateButton("delete-button", ".tools__button");
 	};
-
-	// делаем кнопки чуть красивее, если сайт открыт на мобилке
-	if (
-		/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
-			navigator.userAgent
-		)
-	) {
-		rockButton.style.padding = "5px";
-		randomButton.style.padding = "5px";
-	}
 
 	// перемещнеие окна с инструментами
 	const tools = document.getElementById("tools");
@@ -193,8 +171,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		move(new_x, new_y) {
 			this.x = new_x;
 			this.y = new_y;
-			this.ref.style.left = String(new_x) + "px";
-			this.ref.style.top = String(new_y) + "px";
+			this.ref.style.left = new_x + "px";
+			this.ref.style.top = new_y + "px";
 		}
 
 		delete() {
@@ -344,10 +322,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			}
 		});
 
-		// НУЖНО ДЛЯ КАЖДОЙ СУЩНОСТИ СГЕНЕРИРОВАТЬ СВОЙ СПИСОК ЦЕЛЕЙ,
-		// К КОТОРЫМ ОНА МОЖЕТ ПРИБЛИЖАТЬСЯ ИЛИ ОТ КОТОРЫХ МОЖЕТ УБЕГАТЬ
-		// прописываем для каждой сущности направления к другим сущностям
-
 		// запускаем игровой цикл
 		let cycleCounter = 0;
 
@@ -416,23 +390,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
 		cords = [];
 		rpsElements.forEach((rpsElem, i) => {
-			// Этот способ передвижения заставляет сущностей колебаться около начальной точки
-			// speed = Math.random() * 10;
-			// // speed = (Math.random() * 4) ** 2;
-			// // speed = Math.random() ** 4 * 10;
-
-			// sign_x = Math.random() < 0.5 ? -1 : 1;
-			// sign_y = Math.random() < 0.5 ? -1 : 1;
-
-			// dx = Math.random();
-			// dy = Math.sqrt(1 - dx ** 2);
-
-			// motion = [sign_x * dx * speed, sign_y * dy * speed];
-
-			// new_x = rpsElem.x + motion[0];
-			// new_y = rpsElem.y + motion[1];
-
-			// Этот способ будет направлять сущность ко второй рандомной сущности
 			let target = targets[i];
 			let targetCords = [rpsElements[target].x, rpsElements[target].y];
 			let ownCords = [rpsElem.x, rpsElem.y];
@@ -444,11 +401,12 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			let xn = vectorSigns[0] * Math.sqrt(k ** 2 / (k ** 2 + 1));
 			let yn = vectorSigns[1] * Math.sqrt(1 - xn ** 2);
 
-			// let speed = (Math.random() * 10) ** 2;
 			let direction = directions[i];
 			let speed = Math.random() * 5;
+
 			// ДЛЯ ЭТОЙ ФИЗИКИ ДВИЖЕНИЯ НУЖНО СДЕЛАТЬ НОРМАЛЬНЫЕ ГРАНИЦЫ ПОЛЯ
 			// let motion = [xn * speed * direction, yn * speed * direction];
+
 			let motion = [xn * speed, yn * speed];
 			let new_x = rpsElem.x + motion[0];
 			let new_y = rpsElem.y + motion[1];
@@ -459,49 +417,57 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		// перемещаем элементы
 		// ТУТ ДОЛЖНА БЫТЬ ПРОВЕРКА НА УХОД ЗА ГРАНИЦЫ ПОЛЯ
 		for (let i = 0; i < cords.length; i++) {
-			rpsElement = rpsElements[i];
+			let rpsElement = rpsElements[i];
 			rpsElement.move(cords[i][0], cords[i][1]);
 		}
 
-		// создаём очередь смены типов, которая выполнится после
-		let typeQueue = [];
-		// проверяем наличие столкновений
+		// создаём очередь столкновений
+		let collisionQueue = [];
 		for (let i = 0; i < rpsElements.length - 1; i++) {
 			for (let j = i + 1; j < rpsElements.length; j++) {
+				// считаем дистанцию между элементами
 				cds1 = cords[i];
 				cds2 = cords[j];
 
-				// сравниваем минимальное расстояние с расстоянием между элементами
 				let dist = Math.sqrt((cds1[0] - cds2[0]) ** 2 + (cds1[1] - cds2[1]) ** 2);
 				if (dist <= collisionDist) {
-					console.log("COLLISION");
-					rpsElem1 = rpsElements[i];
-					rpsElem2 = rpsElements[j];
-
-					// смотрим, какого типа станут элементы после столкновения
-					let types = [rpsElem1.type, rpsElem2.type];
-					let typeToChange = "none";
-					if (types.includes("rock") && types.includes("paper")) {
-						typeToChange = "paper";
-					} else if (types.includes("rock") && types.includes("scissors")) {
-						typeToChange = "rock";
-					} else if (types.includes("paper") && types.includes("scissors")) {
-						typeToChange = "scissors";
-					}
-
-					// заносим смену типа в очередь
-					if (typeToChange != "none") {
-						typeQueue.push([i, typeToChange]);
-						typeQueue.push([j, typeToChange]);
-					}
+					// если дистанция маленькая, то заносим в очередь
+					collisionQueue.push([i, j, dist]);
 				}
 			}
 		}
 
-		// меняем тип у столкнувшихся объектов
-		typeQueue.forEach(([i, type]) => {
-			rpsElement = rpsElements[i];
-			rpsElement.changeType(type);
+		// сортируем очередь по возрастанию дистанции между сущностями,
+		// чтобы у обработки была хоть какая-то упорядоченность
+		collisionQueue.sort((a, b) => {
+			return a[2] - b[2];
+		});
+
+		// меняем сущностям типы
+		collisionQueue.forEach(([i, j, currDist]) => {
+			let rpsElem1 = rpsElements[i];
+			let rpsElem2 = rpsElements[j];
+			if (rpsElem1.type == rpsElem2.type) {
+				return;
+			}
+
+			// просчитываем тип
+			types = [rpsElem1.type, rpsElem2.type];
+			let typeToChange;
+			if (types.includes("rock") && types.includes("paper")) {
+				typeToChange = "paper";
+			} else if (types.includes("rock") && types.includes("scissors")) {
+				typeToChange = "rock";
+			} else if (types.includes("paper") && types.includes("scissors")) {
+				typeToChange = "scissors";
+			}
+
+			// меняем тип у сущности
+			if (rpsElem1.type == typeToChange) {
+				rpsElem2.changeType(typeToChange);
+			} else {
+				rpsElem1.changeType(typeToChange);
+			}
 
 			// звук по приколу
 			sound.play();
