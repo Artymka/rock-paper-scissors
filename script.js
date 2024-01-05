@@ -3,10 +3,6 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
 	// разыне константы
 
-	// чтобы ушки радовались
-	const sound = new Audio("sound1.mp3");
-	sound.volume = 0.1;
-
 	// сколько итераций игры должно произовйти, чтобы сущности поменяли цельи
 	const cyclesToChangeTargets = 3;
 
@@ -18,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function (e) {
 
 	// максимальное расстояние между столнувшимися объектами
 	const collisionDist = 20;
+
+	// множитель скорости сущностей (или максимальная их скорость)
+	const speedMultiplier = 5;
 
 	// создаём экран приветствия
 	// обёртка и начальный экран
@@ -394,15 +393,24 @@ document.addEventListener("DOMContentLoaded", function (e) {
 			let targetCords = [rpsElements[target].x, rpsElements[target].y];
 			let ownCords = [rpsElem.x, rpsElem.y];
 
-			let vector = [targetCords[0] - ownCords[0], targetCords[1] - ownCords[1]];
-			let vectorSigns = [vector[0] < 0 ? -1 : 1, vector[1] < 0 ? -1 : 1];
-			let k = vector[0] / vector[1];
+			let v = [targetCords[0] - ownCords[0], targetCords[1] - ownCords[1]];
+			let vSigns = [v[0] < 0 ? -1 : 1, v[1] < 0 ? -1 : 1];
 
-			let xn = vectorSigns[0] * Math.sqrt(k ** 2 / (k ** 2 + 1));
-			let yn = vectorSigns[1] * Math.sqrt(1 - xn ** 2);
+			// У ТЕБЯ ТУТ ПРОБЛЕМА:
+			// vector[1] ТЕОРЕТИЧЕСКИ МОЖЕТ БЫТЬ РАВЕН НУЛЮ,
+			// ИЗ-ЗА ЧЕГО k МОЖЕТ СТАТЬ РАВНЫМ Infinity
+			// ПОПЫТАЙСЯ ВСЁ СДЕЛАТЬ БЕЗ ПРОМЕЖУТОЧНЫХ ВЫЧИСЛЕНИЙ
 
-			let direction = directions[i];
-			let speed = Math.random() * 5;
+			// let k = vector[0] / vector[1];
+			// let xn = vectorSigns[0] * Math.sqrt(k ** 2 / (k ** 2 + 1));
+			// let yn = vectorSigns[1] * Math.sqrt(1 - xn ** 2);
+
+			let xn = vSigns[0] * Math.sqrt(Math.abs(v[0] ** 2 / (v[0] ** 2 + v[1] ** 2)));
+
+			let yn = vSigns[1] * Math.sqrt(1 - xn ** 2);
+
+			// let direction = directions[i];
+			let speed = Math.random() * speedMultiplier;
 
 			// ДЛЯ ЭТОЙ ФИЗИКИ ДВИЖЕНИЯ НУЖНО СДЕЛАТЬ НОРМАЛЬНЫЕ ГРАНИЦЫ ПОЛЯ
 			// let motion = [xn * speed * direction, yn * speed * direction];
